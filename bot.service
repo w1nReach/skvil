@@ -1,0 +1,18 @@
+[Unit]
+Description=Telegram Auto-Approve Bot (aiogram)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/bot
+# Если используешь venv, раскомментируй следующую строку и закомментируй ExecStart ниже
+# ExecStart=/root/bot/.venv/bin/python /root/bot/main.py
+ExecStart=/usr/bin/python3 /root/bot/main.py
+Restart=always
+RestartSec=5
+# Запускаем от root, т.к. путь /root/bot
+User=root
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
