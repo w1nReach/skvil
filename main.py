@@ -1,6 +1,5 @@
 import asyncio
-from aiogram import Bot, Dispatcher
-from aiogram.types import ChatJoinRequest
+from aiogram import Bot, Dispatcher, types
 from dotenv import load_dotenv
 import os
 
@@ -8,20 +7,17 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+dp = Dispatcher(bot)
 
-@dp.chat_join_request()
-async def auto_approve(req: ChatJoinRequest):
+@dp.chat_join_request_handler()
+async def approve_join(req: types.ChatJoinRequest):
     try:
         await req.approve()
     except Exception as e:
-        print("CRITICAL ERROR: failed to approve join request ->", e)
+        print("CRITICAL ERROR:", e)
 
 async def main():
-    try:
-        await dp.start_polling(bot)
-    except Exception as e:
-        print("CRITICAL ERROR: polling stopped ->", e)
+    await dp.start_polling()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(main())
