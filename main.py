@@ -16,8 +16,15 @@ async def approve_join(req: types.ChatJoinRequest):
     except Exception as e:
         print("CRITICAL ERROR:", e)
 
-async def main():
-    await dp.start_polling()
+async def safe_polling():
+    while True:
+        try:
+            await bot.polling(
+                allowed_updates=types.AllowedUpdates.all(),
+                request_timeout=60
+            )
+        except Exception as e:
+            print("Error:", e)
+            await asyncio.sleep(3) 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+asyncio.run(safe_polling())
