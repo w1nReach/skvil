@@ -9,8 +9,8 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-MIN_DELAY = 10        # минимальная задержка перед одобрением (изменяем под себя *но эта задержка рекомендуется)
-MAX_JITTER = 3        # + случайная задержка до 3 сек (для естественности)
+MIN_DELAY = 10        # минимальная задержка перед одобрением
+MAX_JITTER = 3        # случайное смещение до 3 сек
 
 @dp.chat_join_request_handler()
 async def approve_join(req: types.ChatJoinRequest):
@@ -18,13 +18,14 @@ async def approve_join(req: types.ChatJoinRequest):
     try:
         await req.approve()
     except:
+        pass   # <-- обязательно нужно хоть что-то
 
 async def main():
     while True:
         try:
-            await dp.start_polling()
+            await dp.polling()
         except:
-            await asyncio.sleep(5) 
+            await asyncio.sleep(5)
 
 if __name__ == '__main__':
     asyncio.run(main())
