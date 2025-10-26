@@ -9,22 +9,22 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
+MIN_DELAY = 10        # минимальная задержка перед одобрением (изменяем под себя *но эта задержка рекомендуется)
+MAX_JITTER = 3        # + случайная задержка до 3 сек (для естественности)
+
 @dp.chat_join_request_handler()
 async def approve_join(req: types.ChatJoinRequest):
+    await asyncio.sleep(MIN_DELAY + (asyncio.get_event_loop().time() % MAX_JITTER))
     try:
         await req.approve()
-    except Exception as e:
-        print("CRITICAL ERROR:", e)
+    except:
 
-async def safe_polling():
+async def main():
     while True:
         try:
-            await bot.polling(
-                allowed_updates=types.AllowedUpdates.all(),
-                request_timeout=60
-            )
-        except Exception as e:
-            print("Error:", e)
-            await asyncio.sleep(3) 
+            await dp.start_polling()
+        except:
+            await asyncio.sleep(5) 
 
-asyncio.run(safe_polling())
+if __name__ == '__main__':
+    asyncio.run(main())
